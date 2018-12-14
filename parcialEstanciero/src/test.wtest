@@ -1,0 +1,39 @@
+import example.*
+
+describe "tests" {
+	const agustin = new Jugador(dinero=100,propiedades=[],casilleroActual=0)
+	const lucas =  new Jugador(dinero=10000,propiedades=[],casilleroActual=0)
+	const buenosAires = new Provincia(campos=[])
+	const campoLaQuiaca = new Campo(posicion=0,precio=1000,duenio=lucas, tipoCampo=normal, tipo="campo", rentaFija=1000, provincia=buenosAires, costoConstruccion=500, cantEstancias=10)
+	const microsoft = new Empresa(precio = 10000000, duenio = agustin, tipo="empresa",posicion = 1)
+	const apple = new Empresa(precio = 100000, duenio = agustin, tipo="empresa",posicion = 2)
+	const campoUTN = new Campo(posicion=3,precio=19900,duenio=lucas, tipoCampo=normal, tipo="campo", rentaFija=2000, provincia=buenosAires, costoConstruccion=100, cantEstancias=11)
+	
+	fixture {
+		buenosAires.agregar(campoLaQuiaca)
+		buenosAires.agregar(campoUTN)
+		lucas.agregarPropiedad(campoLaQuiaca)
+		lucas.agregarPropiedad(campoUTN)
+		agustin.agregarPropiedad(microsoft)
+		agustin.agregarPropiedad(apple)
+		
+	}
+
+	test "tratar de comprar un campo y que no te deje por falta de dinero"{
+		assert.throwsExceptionLike(new FaltaDinero("No alcanza el dinero"),{campoLaQuiaca.cayoAqui(agustin)})
+	}
+	test "testear que lucas puede construir estancias en buenos aires"{
+		assert.that(lucas.puedeConstruir(buenosAires))
+	}
+	test "testear que agustin no  puede construir estancias en buenos aires"{
+		assert.notThat(agustin.puedeConstruir(buenosAires))
+	}
+	test "testear renta del campo UTN"{
+		assert.equals(4096000,campoUTN.renta(2,2)) //no me importa los parametros, los pongo para q me deje hacer el test
+	}
+	test "testear cantidad de empresas de agustin"{
+		assert.equals(2,agustin.cantEmpresas())
+	}
+}
+
+

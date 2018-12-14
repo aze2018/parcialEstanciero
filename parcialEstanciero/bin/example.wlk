@@ -1,4 +1,4 @@
-class Exception inherits Exception { }
+class FaltaDinero inherits Exception { }
 class Jugador{
 	var property dinero
 	var propiedades = []
@@ -16,7 +16,7 @@ class Jugador{
 			entidad.agregarDinero(cant)
 			self.sacarDinero(cant)	
 		}else{
-			throw new Exception ("No alcanza el dinero")
+			throw new FaltaDinero ("No alcanza el dinero")
 		}		
 	}
 
@@ -69,7 +69,9 @@ object banco inherits Jugador{
 
 object tablero{
 	var lstCasilleros=[]
-	
+	method agregarCasillero(entidad){
+		lstCasilleros.add(entidad)
+	}
 	method posicionActual(personaje){
 		return personaje.casilleroActual().posicion()
 	}
@@ -92,7 +94,9 @@ class Casilleros{
 class Propiedades inherits Casilleros{
 	var property precio
 	var property duenio = banco
-	var property tipo
+	var property tipo //recibe el string "empresa" o "campo"
+	//simplemente lo uso para el metodo cantEmpresas. Lo use asi para
+	//que sea mas simple el metodo
 	override method cayoAqui(personaje){
 		duenio.generarTransaccion(self,personaje)
 	}
@@ -101,10 +105,10 @@ class Propiedades inherits Casilleros{
 
 class Campo inherits Propiedades{
 	var property rentaFija 
-	var property pronvicia
+	var property provincia
 	var property costoConstruccion
 	var property cantEstancias = 0
-	var property tipoCampo
+	var property tipoCampo //recibe el objecto normal o loco, de esta forma diferenciamos los 2 tipos
 	
 	method renta(_A,_B){ //no me importan los parametros en este caso
 		return (2 ** cantEstancias) * rentaFija
@@ -146,6 +150,7 @@ class Salidas inherits Casilleros{
 
 class Provincia{
 	var property campos = []	
+	method agregar(campo){campos.add(campo)}
 	
 	method listaEstancias(){ //lista con la cantidad de estancias por cada campo
 		return campos.map({campo => campo.cantEstancias()})
